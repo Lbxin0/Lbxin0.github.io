@@ -6,7 +6,7 @@
 
 <title>Socket 技术详解 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1635911215923">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636077107121">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1635911215923"
+            <form id="gridea-search-form" style="position: relative" data-update="1636077107121"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -149,7 +149,36 @@ websocket 在通信时需要借助 http ，但是他是属于双向通信协议�
 ws 和 wss 来进行通信协议的确定，和 HTTP 和 HTTPS 类似，ws 表示纯文本通信，wss 表示加密通道通信(TCP + TLS)，考虑到 websocket 的其他应用场景，需要自定义协议，比如保证在非 HTTP 的情况下也可以进行数据交换。<br>
 ws 协议：普通请求，占用与 HTTP 相同的 80 端口；<br>
 wss 协议：基于 SSL 的安全传输，占用与 TLS 相同的 443 端口；<br>
-HTTP 这中间设备会对 websocket 进行请求的特殊处理，比如连接的盲目升级和数据内容的随意修改等 ，wss 建立了一条端到端的安全传输通道，这个通道对中间设备模糊数据，使其无法感知到数据，也就无法对数据进行特殊处理了。</p>
+HTTP 这中间设备会对 websocket 进行请求的特殊处理，比如连接的盲目升级和数据内容的随意修改等 ，wss 建立了一条端到端的安全传输通道，这个通道对中间设备模糊数据，使其无法感知到数据，也就无法对数据进行特殊处理了。<br>
+websocket 协议其实是一个 http 请求，”Upgrade:WebSocket” 表示需要将客户端的通讯协议从 http 升级到 websocket 协议，客户端到服务端的请求信息里还包括”Sec-WebSocket-Extensions”、“Sec-WebSocket-Key”这样的头信息，服务端在接收到这些握手信息后解析这些头信息，然后生成一个 28 位的安全密钥返回给客户端，表明服务器接收到了客户端的请求，同意创建 websocket 连接。<br>
+4、socket.io<br>
+socket.io 是对 websocket 的封装，并且实现了服务器代码，socket.io 将 websocket 和轮询机制及通讯方式封装成了通用的接口，socket.io 简化了 websocket API ，websocket 是 socket.io 实现通讯的一个子集。<br>
+创建 socket.io 服务器需要依赖于已近创建好的 HTTP 服务器，因此需要首先创建一个 HTTP 的服务器，然后使用 socket 的 listen 方法创建一个 Socket.io 的服务器。<br>
+``const socket = io.connect();<code>使用 socket.io 客户端和服务器端进行数据通信时有两种方式: 常规的 socket.send() 发送数据，另一端使用</code>socket.on('message',(data)=&gt;{})<code>监听消息；另外一种方式就是通过</code>socket.emit('name',data,fn)<code>发送事件，另一端通过</code>socket.on('name',(name,fn)=&gt;{fn(data1,data2,...)})<code>进行监听事件；在 emit 的时候可以传入多个参数，当传入函数的时候就可以实现另一端通过回调的方式调用该函数进行数据的传递； 服务端实现： // 引入socke.io</code>const io = require('socket.io')(80)<code>// 监听客户端连接,回调函数会传递本次连接的socket</code>io.on('connection',function(socket))<code>// 给所有客户端广播消息</code> io.sockets.emit('String',data)<code>// 给指定的客户端发送消息</code> io.sockets.socket(socketid).emit('String', data)<code>// 监听客户端发送的信息</code>socket.on('String',function(data))<code>// 给该socket的客户端发送消息</code>socket.emit('String', data)<code>Node.js API // socket-server.js // 需要使用HTTP模块来启动服务器和Socket.IO</code>const http= require('http'),<code></code>const io= require('socket.io')`</p>
+<pre><code>        `const server= http.createServer(function(req, res){ `
+            // 发送HTML的headers和message
+            `res.writeHead(200,{ 'Content-Type': 'text/html' })`
+            `res.end('&lt;p&gt;Hello Socket.IO!&lt;p&gt;')`
+        `}); `
+        // 在8080端口启动服务器
+        `server.listen(8080)`
+
+        // 创建一个Socket.IO实例，并把它传递给服务器
+        `const socket= io.listen(server)`
+
+        // 添加一个连接监听器
+        `socket.on('connection', function(client) { `
+            // 连接成功，开始监听
+            `client.on('message',function(event){ `
+                `console.log('Received message from client!',event)`
+            `})`
+            // 连接失败
+            `client.on('disconnect',function(){`
+                `clearInterval(interval)`
+                `console.log('Server has disconnected')`
+            `})`
+        `})`
+</code></pre>
 
                 </div>
             </article>
