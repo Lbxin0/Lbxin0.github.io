@@ -6,7 +6,7 @@
 
 <title>Socket 技术详解 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636077107121">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636077420400">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636077107121"
+            <form id="gridea-search-form" style="position: relative" data-update="1636077420400"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -122,17 +122,17 @@
 　　socket起源于Unix，而Unix/Linux基本哲学之一就是“一切皆文件”，都可以用“打开open –&gt; 读写write/read –&gt; 关闭close”模式来操作。<br>
 　　我的理解就是Socket就是该模式的一个实现：即socket是一种特殊的文件，一些socket函数就是对其进行的操作（读/写IO、打开、关闭）。<br>
 　　Socket()函数返回一个整型的Socket描述符，随后的连接建立、数据传输等操作都是通过该Socket实现的。<br>
-客户端在调用 socket() 函数创建套接字后，并没有建立连接，所以此时套接字还处于 CLOSED 的状态；服务端在调用 listen() 函数后，套接字进入 LISTEN 状态，开始监听客户端请求。</p>
+客户端在调用 socket() 函数创建套接字后，并没有建立连接，所以此时套接字还处于 CLOSED 的状态；服务端在调用 <code>listen()</code> 函数后，套接字进入 LISTEN 状态，开始监听客户端请求。</p>
 <p>二、Socket 的断开方式<br>
-close()/closesocket() 用来关闭套接字，并在内存中将其清除，后续将无法再继续使用，而 shutdown() 则是用来关闭连接，而不是套接字，套接字在内存中还是存在；<br>
+<code>close()/closesocket()</code> 用来关闭套接字，并在内存中将其清除，后续将无法再继续使用，而 shutdown() 则是用来关闭连接，而不是套接字，套接字在内存中还是存在；<br>
 两者都会向网络中发送 FIN 包，表示数据传输完毕，客户端收到 FIN  数据包后便认为没有数据进行传输，随后向服务端发送 ACK 包，进入 TIME_WAIT 阶段；<br>
-不同点在于 close()/closesocket() 会立即向网络中发送 FIN 包，不管缓冲区是否还有数据，会造成缓冲区数据的糗丢失，而 shutdown() 是等待缓冲区数据传输完成后再进行发送 FIN 包；</p>
+不同点在于 <code>close()/closesocket()</code> 会立即向网络中发送 FIN 包，不管缓冲区是否还有数据，会造成缓冲区数据的糗丢失，而 <code>shutdown()</code> 是等待缓冲区数据传输完成后再进行发送 FIN 包；</p>
 <p>三、 Socket 常用函数接口及其原理<br>
 图解 socket 函数:<br>
 <img src="https://Lbxin0.github.io/post-images/1635472634446.webp" alt="" loading="lazy"><br>
 <img src="https://Lbxin0.github.io/post-images/1635472646436.webp" alt="" loading="lazy"><br>
 1、使用 socket() 函数创建套接字<br>
-int socket(int af, int type, int protocol);<br>
+<code>int socket(int af, int type, int protocol);</code><br>
 af-地址族(Address Family),即 IP 地址类型<br>
 四、前后端的交互问题<br>
 1、前后端双向消息传递的方式：<br>
@@ -150,11 +150,30 @@ ws 和 wss 来进行通信协议的确定，和 HTTP 和 HTTPS 类似，ws 表�
 ws 协议：普通请求，占用与 HTTP 相同的 80 端口；<br>
 wss 协议：基于 SSL 的安全传输，占用与 TLS 相同的 443 端口；<br>
 HTTP 这中间设备会对 websocket 进行请求的特殊处理，比如连接的盲目升级和数据内容的随意修改等 ，wss 建立了一条端到端的安全传输通道，这个通道对中间设备模糊数据，使其无法感知到数据，也就无法对数据进行特殊处理了。<br>
-websocket 协议其实是一个 http 请求，”Upgrade:WebSocket” 表示需要将客户端的通讯协议从 http 升级到 websocket 协议，客户端到服务端的请求信息里还包括”Sec-WebSocket-Extensions”、“Sec-WebSocket-Key”这样的头信息，服务端在接收到这些握手信息后解析这些头信息，然后生成一个 28 位的安全密钥返回给客户端，表明服务器接收到了客户端的请求，同意创建 websocket 连接。<br>
+websocket 协议其实是一个 http 请求，<code>”Upgrade:WebSocket”</code> 表示需要将客户端的通讯协议从 http 升级到 websocket 协议，客户端到服务端的请求信息里还包括<code>”Sec-WebSocket-Extensions”、“Sec-WebSocket-Key”</code>这样的头信息，服务端在接收到这些握手信息后解析这些头信息，然后生成一个 28 位的安全密钥返回给客户端，表明服务器接收到了客户端的请求，同意创建 websocket 连接。<br>
 4、socket.io<br>
 socket.io 是对 websocket 的封装，并且实现了服务器代码，socket.io 将 websocket 和轮询机制及通讯方式封装成了通用的接口，socket.io 简化了 websocket API ，websocket 是 socket.io 实现通讯的一个子集。<br>
 创建 socket.io 服务器需要依赖于已近创建好的 HTTP 服务器，因此需要首先创建一个 HTTP 的服务器，然后使用 socket 的 listen 方法创建一个 Socket.io 的服务器。<br>
-``const socket = io.connect();<code>使用 socket.io 客户端和服务器端进行数据通信时有两种方式: 常规的 socket.send() 发送数据，另一端使用</code>socket.on('message',(data)=&gt;{})<code>监听消息；另外一种方式就是通过</code>socket.emit('name',data,fn)<code>发送事件，另一端通过</code>socket.on('name',(name,fn)=&gt;{fn(data1,data2,...)})<code>进行监听事件；在 emit 的时候可以传入多个参数，当传入函数的时候就可以实现另一端通过回调的方式调用该函数进行数据的传递； 服务端实现： // 引入socke.io</code>const io = require('socket.io')(80)<code>// 监听客户端连接,回调函数会传递本次连接的socket</code>io.on('connection',function(socket))<code>// 给所有客户端广播消息</code> io.sockets.emit('String',data)<code>// 给指定的客户端发送消息</code> io.sockets.socket(socketid).emit('String', data)<code>// 监听客户端发送的信息</code>socket.on('String',function(data))<code>// 给该socket的客户端发送消息</code>socket.emit('String', data)<code>Node.js API // socket-server.js // 需要使用HTTP模块来启动服务器和Socket.IO</code>const http= require('http'),<code></code>const io= require('socket.io')`</p>
+<code>const socket = io.connect()</code><br>
+使用 socket.io 客户端和服务器端进行数据通信时有两种方式: 常规的 socket.send() 发送数据，另一端使用 <code>socket.on('message',(data)=&gt;{})</code> 监听消息；另外一种方式就是通过 <code>socket.emit('name',data,fn)</code> 发送事件，另一端通过 <code>socket.on('name',(name,fn)=&gt;{fn(data1,data2,...)})</code> 进行监听事件；在 emit 的时候可以传入多个参数，当传入函数的时候就可以实现另一端通过回调的方式调用该函数进行数据的传递；<br>
+服务端实现：<br>
+// 引入socke.io<br>
+<code>const io = require('socket.io')(80)</code><br>
+// 监听客户端连接,回调函数会传递本次连接的socket<br>
+<code>io.on('connection',function(socket))</code><br>
+// 给所有客户端广播消息<br>
+<code>io.sockets.emit('String',data)</code><br>
+// 给指定的客户端发送消息<br>
+<code>io.sockets.socket(socketid).emit('String', data)</code><br>
+// 监听客户端发送的信息<br>
+<code>socket.on('String',function(data))</code><br>
+// 给该socket的客户端发送消息<br>
+<code>socket.emit('String', data)</code><br>
+Node.js API<br>
+// socket-server.js<br>
+// 需要使用HTTP模块来启动服务器和Socket.IO<br>
+<code>const http= require('http'),</code><br>
+<code>const io= require('socket.io')</code></p>
 <pre><code>        `const server= http.createServer(function(req, res){ `
             // 发送HTML的headers和message
             `res.writeHead(200,{ 'Content-Type': 'text/html' })`
