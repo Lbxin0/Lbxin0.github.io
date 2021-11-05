@@ -6,7 +6,7 @@
 
 <title>Socket 技术详解 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636077420400">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636077768646">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636077420400"
+            <form id="gridea-search-form" style="position: relative" data-update="1636077768646"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -158,45 +158,27 @@ socket.io 是对 websocket 的封装，并且实现了服务器代码，socket.i
 使用 socket.io 客户端和服务器端进行数据通信时有两种方式: 常规的 socket.send() 发送数据，另一端使用 <code>socket.on('message',(data)=&gt;{})</code> 监听消息；另外一种方式就是通过 <code>socket.emit('name',data,fn)</code> 发送事件，另一端通过 <code>socket.on('name',(name,fn)=&gt;{fn(data1,data2,...)})</code> 进行监听事件；在 emit 的时候可以传入多个参数，当传入函数的时候就可以实现另一端通过回调的方式调用该函数进行数据的传递；<br>
 服务端实现：<br>
 // 引入socke.io<br>
-<code>const io = require('socket.io')(80)</code><br>
-// 监听客户端连接,回调函数会传递本次连接的socket<br>
-<code>io.on('connection',function(socket))</code><br>
-// 给所有客户端广播消息<br>
-<code>io.sockets.emit('String',data)</code><br>
-// 给指定的客户端发送消息<br>
-<code>io.sockets.socket(socketid).emit('String', data)</code><br>
-// 监听客户端发送的信息<br>
-<code>socket.on('String',function(data))</code><br>
-// 给该socket的客户端发送消息<br>
-<code>socket.emit('String', data)</code><br>
+<code>const io = require('socket.io')(80) // 监听客户端连接,回调函数会传递本次连接的socket io.on('connection',function(socket)) // 给所有客户端广播消息 io.sockets.emit('String',data) // 给指定的客户端发送消息 io.sockets.socket(socketid).emit('String', data) // 监听客户端发送的信息 socket.on('String',function(data)) // 给该socket的客户端发送消息 socket.emit('String', data)</code><br>
 Node.js API<br>
 // socket-server.js<br>
 // 需要使用HTTP模块来启动服务器和Socket.IO<br>
-<code>const http= require('http'),</code><br>
-<code>const io= require('socket.io')</code></p>
-<pre><code>        `const server= http.createServer(function(req, res){ `
-            // 发送HTML的headers和message
-            `res.writeHead(200,{ 'Content-Type': 'text/html' })`
-            `res.end('&lt;p&gt;Hello Socket.IO!&lt;p&gt;')`
-        `}); `
-        // 在8080端口启动服务器
-        `server.listen(8080)`
-
-        // 创建一个Socket.IO实例，并把它传递给服务器
-        `const socket= io.listen(server)`
-
+<code>const http= require('http'), const io= require('socket.io') const server= http.createServer(function(req, res){ // 发送HTML的headers和message res.writeHead(200,{ 'Content-Type': 'text/html' }) res.end('&lt;p&gt;Hello Socket.IO!&lt;p&gt;') });</code><br>
+// 在8080端口启动服务器<br>
+server.listen(8080)</p>
+<pre><code>        // 创建一个Socket.IO实例，并把它传递给服务器
+        const socket= io.listen(server)
         // 添加一个连接监听器
-        `socket.on('connection', function(client) { `
+        socket.on('connection', function(client) { 
             // 连接成功，开始监听
-            `client.on('message',function(event){ `
-                `console.log('Received message from client!',event)`
-            `})`
+            client.on('message',function(event){ 
+                console.log('Received message from client!',event)
+            })
             // 连接失败
-            `client.on('disconnect',function(){`
-                `clearInterval(interval)`
-                `console.log('Server has disconnected')`
-            `})`
-        `})`
+            client.on('disconnect',function(){
+                clearInterval(interval)
+                console.log('Server has disconnected')
+            })
+        })
 </code></pre>
 
                 </div>
