@@ -6,7 +6,7 @@
 
 <title>socket.io 工作流程 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636188917261">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636189104892">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636188917261"
+            <form id="gridea-search-form" style="position: relative" data-update="1636189104892"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -141,12 +141,12 @@ socket.io 有时候使用 WebSocket 作为传输，但它为每个数据包添�
 socket.io 通过普通的 WebSocket 提供的功能有：<br>
 1、可靠性：如无法建立 WebSocket 连接，则回退到 HTTP 长轮询；<br>
 2、自动重连；<br>
-3、数据包缓冲：在默认情况下，socket 未连接时发出的任何事件都会被缓冲，在建立连接后再发送出去，但有时可能存在连接恢复时导致大量的事件触发，可以通过检测进行排除法触发对应事件；<br>
-if (socket.connected) {<br>
-socket.emit( /* ... */ );<br>
-} else {<br>
-// ...<br>
-}</p>
+3、数据包缓冲：在默认情况下，socket 未连接时发出的任何事件都会被缓冲，在建立连接后再发送出去，但有时可能存在连接恢复时导致大量的事件触发，可以通过检测进行排除法触发对应事件；</p>
+<pre><code>     if (socket.connected) {
+        socket.emit( /* ... */ );
+     } else {
+        // ...
+     }</code></pre>
 
                 </div>
             </article>
