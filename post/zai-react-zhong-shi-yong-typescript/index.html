@@ -6,7 +6,7 @@
 
 <title>在 React 中使用 TypeScript； | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636189104892">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636189289532">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636189104892"
+            <form id="gridea-search-form" style="position: relative" data-update="1636189289532"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -118,86 +118,94 @@
                 </div>
                 <div class="post-content">
                     <ul>
-<li>组件声明<br>
-1、类组件：<br>
-React.Component&lt;P, S={}&gt; 和 React.PureComponent&lt;P, S={} SS={}&gt;;<br>
-import React, {PureComponent, Component} from &quot;react&quot;;<br>
-interface propsType {<br>
-name: string<br>
-}<br>
-interface stateType {<br>
-id: number<br>
-}<br>
-......<br>
-class App extends React.Component&lt;propsType, stateType&gt;{<br>
-......<br>
-}<br>
-class App React.PureComponent&lt;propsType, stateType&gt;{<br>
-......<br>
-}<br>
-React.Component 和 React.PureComponent 的区别在于 PureComponent 在 shouldComponentUpdate 只进行浅层的比较，只要外层的对象不发生变化就不会触发 render，减少了不必要的 virtual DOM 的 diff 和重新生成的过程，但缺点就是不适合在含有多层嵌套对象的 state 和 props 中(数据嵌套导致页面得不到更新)，像表单等复杂组件中，将组件拆分成简单的 PureComponent，使得组件变得易于维护；而 Component 父组件的 state 和 props 更新时，子组件都会更新，浪费性能。<br>
-如果在定义组件的时候不确定组件的props类型，只有在调用的时候才知道组件类型，就可以用泛型进行组建的定义了。<br>
-class MyComponent<P> extends React.Component<P> {<br>
-internalProp: P;<br>
-constructor(props: P) {<br>
-super(props);<br>
-this.internalProp = props;<br>
-}<br>
-render() {<br>
-return (<br>
-<span>hello world</span><br>
-);<br>
-}<br>
-}<br>
-// 使用组件<br>
-type IProps = { name: string; age: number; };<br>
-&lt;MyComponent<IProps> name=&quot;React&quot; age={18} /&gt;;          // Success<br>
-&lt;MyComponent<IProps> name=&quot;TypeScript&quot; age=&quot;hello&quot; /&gt;;  // Error<br>
-2、函数组件<br>
-书写方式有直接函数声明的方式和 React.FunctionComponent/React.FC&lt;P={}&gt; 来定义；<br>
-<code>type React.FC&lt;P = {}&gt; = React.FunctionComponent&lt;P&gt;</code><br>
-import Child1 from &quot;./child1&quot;;<br>
-import Child2 from &quot;./child2&quot;;<br>
-interface IProps {<br>
-name: string;<br>
-}<br>
-const App: React.FC<IProps> = (props) =&gt; {<br>
-const { name } = props;<br>
-return (<br>
-<Child1 name={name}><br>
-<Child2 name={name} /><br>
-TypeScript<br>
-</Child1><br>
-);<br>
-};<br>
-export default App;<br>
-// 其中 cheild1 组件的 props 中有 name 和 children 的属性，children 是一个数组，包含了 child2 对象和后面的文本；<br>
-当使用箭头函数的方式进行定义的时候需要注意必须使用 extends 关键字来定义泛型参数才可以被解析成功；<br>
-const MyComponent = <P extends any>(props: P) {<br>
-return (<br>
-<span><br>
-{props}<br>
-</span><br>
-);<br>
-}<br>
-// 普通函数<br>
-function MyComponent<P>(props: P) {<br>
-return (<br>
-<span><br>
-{props}<br>
-</span><br>
-);<br>
-}<br>
-// 使用组件<br>
-type IProps = { name: string; age: number; };<br>
-&lt;MyComponent<IProps> name=&quot;React&quot; age={18} /&gt;;          // Success<br>
-&lt;MyComponent<IProps> name=&quot;TypeScript&quot; age=&quot;hello&quot; /&gt;;  // Error<br>
-3、react 内置类型简介<br>
-JSX.Element 是 ReactElement 的子类型，没有添加属性，两者是等价的，可以相互赋值；<br>
-JSX.Element 可以通过执行 React.createElement 或是转译 JSX 获得：<br>
-const jsx = <div>Lbxin</div><br>
-const ele = React.createElement(&quot;div&quot;, null, &quot;Lbxin&quot;);</li>
+<li>
+<p>组件声明<br>
+1、类组件：</p>
+<pre><code>  React.Component&lt;P, S={}&gt; 和 React.PureComponent&lt;P, S={} SS={}&gt;;
+  import React, {PureComponent, Component} from &quot;react&quot;;
+  interface propsType {
+      name: string
+  }
+  interface stateType {
+      id: number
+  }
+  ......
+  class App extends React.Component&lt;propsType, stateType&gt;{
+      ......
+  }
+  class App React.PureComponent&lt;propsType, stateType&gt;{
+      ......
+  }
+
+  React.Component 和 React.PureComponent 的区别在于 PureComponent 在 shouldComponentUpdate 只进行浅层的比较，只要外层的对象不发生变化就不会触发 render，减少了不必要的 virtual DOM 的 diff 和重新生成的过程，但缺点就是不适合在含有多层嵌套对象的 state 和 props 中(数据嵌套导致页面得不到更新)，像表单等复杂组件中，将组件拆分成简单的 PureComponent，使得组件变得易于维护；而 Component 父组件的 state 和 props 更新时，子组件都会更新，浪费性能。
+  如果在定义组件的时候不确定组件的props类型，只有在调用的时候才知道组件类型，就可以用泛型进行组建的定义了。
+
+  class MyComponent&lt;P&gt; extends React.Component&lt;P&gt; {
+      internalProp: P;
+      constructor(props: P) {
+          super(props);
+              this.internalProp = props;
+          }
+      render() {
+              return (
+                  &lt;span&gt;hello world&lt;/span&gt;
+              );
+          }
+      }
+      // 使用组件
+      type IProps = { name: string; age: number; };
+      &lt;MyComponent&lt;IProps&gt; name=&quot;React&quot; age={18} /&gt;;          // Success
+      &lt;MyComponent&lt;IProps&gt; name=&quot;TypeScript&quot; age=&quot;hello&quot; /&gt;;  // Error
+</code></pre>
+</li>
 </ul>
+<p>2、函数组件<br>
+书写方式有直接函数声明的方式和 React.FunctionComponent/React.FC&lt;P={}&gt; 来定义；</p>
+<pre><code>    `type React.FC&lt;P = {}&gt; = React.FunctionComponent&lt;P&gt;`
+    import Child1 from &quot;./child1&quot;;
+    import Child2 from &quot;./child2&quot;;
+    interface IProps {
+        name: string;
+    }
+    const App: React.FC&lt;IProps&gt; = (props) =&gt; {
+        const { name } = props;
+        return (
+            &lt;Child1 name={name}&gt;
+                &lt;Child2 name={name} /&gt;
+                TypeScript
+            &lt;/Child1&gt;
+        );
+    };
+    export default App;
+    // 其中 cheild1 组件的 props 中有 name 和 children 的属性，children 是一个数组，包含了 child2 对象和后面的文本；
+    当使用箭头函数的方式进行定义的时候需要注意必须使用 extends 关键字来定义泛型参数才可以被解析成功；
+
+    const MyComponent = &lt;P extends any&gt;(props: P) {
+        return (
+            &lt;span&gt;
+                {props}
+            &lt;/span&gt;
+        );
+    }
+    // 普通函数
+    function MyComponent&lt;P&gt;(props: P) {
+            return (
+                &lt;span&gt;
+                    {props}
+                &lt;/span&gt;
+            );
+    }
+    // 使用组件
+    type IProps = { name: string; age: number; };
+    &lt;MyComponent&lt;IProps&gt; name=&quot;React&quot; age={18} /&gt;;          // Success
+    &lt;MyComponent&lt;IProps&gt; name=&quot;TypeScript&quot; age=&quot;hello&quot; /&gt;;  // Error
+</code></pre>
+<p>3、react 内置类型简介<br>
+JSX.Element 是 ReactElement 的子类型，没有添加属性，两者是等价的，可以相互赋值；<br>
+JSX.Element 可以通过执行 React.createElement 或是转译 JSX 获得：</p>
+<pre><code>    const jsx = &lt;div&gt;Lbxin&lt;/div&gt;
+    const ele = React.createElement(&quot;div&quot;, null, &quot;Lbxin&quot;);
+</code></pre>
 <p>4、React Hooks<br>
 useState: 默认情况下 React 会根据 statue 的初始值进行自动推断 statue 和更新函数的类型；<br>
 <code>const [count, setCount] = useState&lt;number&gt;(1)</code> //已知 state 的类型；<br>
