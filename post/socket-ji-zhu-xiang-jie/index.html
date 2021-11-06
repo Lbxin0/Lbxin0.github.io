@@ -6,7 +6,7 @@
 
 <title>Socket 技术简介 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636183179117">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636188917261">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636183179117"
+            <form id="gridea-search-form" style="position: relative" data-update="1636188917261"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,6 +135,7 @@
 <code>int socket(int af, int type, int protocol);</code><br>
 af-地址族(Address Family),即 IP 地址类型<br>
 四、前后端的交互问题<br>
+注解：在 WebSocket 出现之前，为实现即时通讯，通常采用的方案是轮询(Polling)和 Comet 技术，Comet 可细分为两种实现方式，长轮询机制和流技术，这两种技术实际是对轮询技术的改进；WebSocket 本质上是基于 tcp 的协议，由通信协议和编程 API 组成，可以在浏览器和服务器之间建立双向连接，以基于事件的方式，赋予浏览器通信的能力。<br>
 1、前后端双向消息传递的方式：<br>
 常见的是前端通过 http 进行数据请求交互，但是是单向的，如果考虑到后台向前台的数据传递就需要用到 websocket 了，常见的还有短轮询、长轮训和 websocket；<br>
 长轮训是对普通轮询的提高和改进，普通轮询就是客户端每隔一段时间就向服务器端发送请求，以频繁请求的方式进行保持客户端和服务端的数据同步，这种问题就是当服务端数据未更新的时候就会造成低效的网络传输；而长轮训在服务端数据没有更新时连接会保持一段时间的周期，直到数据或状态发生变化或连接过期，这样就会减少很多无效的客户端和服务端间的交互；当然数据改变频繁时就和普通轮询差不多了，且长轮询会占用消耗更多的资源，比如 CPU ，内存和宽带等。<br>

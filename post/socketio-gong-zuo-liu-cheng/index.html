@@ -6,7 +6,7 @@
 
 <title>socket.io 工作流程 | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636183179117">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636188917261">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636183179117"
+            <form id="gridea-search-form" style="position: relative" data-update="1636188917261"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,6 +124,7 @@ engine.io 生命周期里，会间隔一定时间 ping - pong 一次，用来测
 engine.io 主要处理服务端和客户端之间的各种传输和升级机制，还有断开检测功能。<br>
 engine.io-client 需要在 open 后才可以send，而 socket.io 则不需要，open 之前的 emit 的数据会在 open 之后再发送出去。<br>
 socket.io 服务端使用 ws 庫实现 websocket 协议， socket.io 服务启动时会先启动一个 ws 服务；在收到 upgrade 事件后，socket.io 会简单校验一下 websocket 相关请求，然后把请求交给 ws 服务进行处理。<br>
+socket.io 支持4种协议：WebSocket、htmlfile、xhr-polling 和 jsonp-polling 协议，它会自动根据浏览器选择合适的通讯方式，从而兼容大多数平台；<br>
 二、工作流程<br>
 在 Engine.io 连接的开始，服务器会发送一些数据信息：</p>
 <pre><code> {
