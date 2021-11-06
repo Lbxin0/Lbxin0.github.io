@@ -1,11 +1,10 @@
 <html>
-
 <head>
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>友情链接 | Lbxin</title>
+<title>socket.io 工作流程 | Lbxin</title>
 
 <link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636183179117">
 
@@ -34,12 +33,11 @@
 <!--<script src="media/scripts/index.js"></script>-->
 
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
 </head>
-
 <body>
 <div class="main gt-bg-theme-color-first">
-        <div class="main-content">
-            <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg">
     <div class="navbar-brand">
         <img class="user-avatar" src="/images/avatar.png" alt="头像">
         <div class="site-name gt-c-content-color-first">
@@ -106,28 +104,69 @@
         }
     }
 </script>
-            <div class="post-container">
-                <div class="post-detail">
-                    <article>
-                        <!-- <div class="post-content-wrapper"> -->
-                            <div class="post-content">
-                                <div class="friends-desc">
-                                    
-                                </div>
-                                <h3 id="linklist">友链列表</h3>
-                                
-                                    
-                                
-                            </div>
-                        <!-- </div> -->
-                    </article>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    socket.io 工作流程
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-11-06 ·
+                    </time>
+                    
                 </div>
-                
+                <div class="post-content">
+                    <p>一、底层相关<br>
+socket.io 底层是engine.io，这个库实现了跨平台的双向通信。engine.io 使用了 websocket 和 XMLHttprequest（或JSONP）封装了自己的 socket协议，一个完整的 engine.io 包括多个 XHR 和 WebSocket 连接。<br>
+engine.io 协议通过一个 XHR 握手，前端发送一个 XHR，通知服务端要进行 XHR 长轮询了，服务端返回数据里包括 open 标志、sid 和 upgrades 字段。sid 相当于是 engine.io 的 SESSION ID，一次 engine.io 包含多个请求，后端又会同时连接多个 engine.io ，起身份的唯一标识；upgrades 一般为 websocket ，标识要把长轮询升级到 websocket。<br>
+engine.io 生命周期里，会间隔一定时间 ping - pong 一次，用来测试网络是否正常。<br>
+engine.io 主要处理服务端和客户端之间的各种传输和升级机制，还有断开检测功能。<br>
+engine.io-client 需要在 open 后才可以send，而 socket.io 则不需要，open 之前的 emit 的数据会在 open 之后再发送出去。<br>
+socket.io 服务端使用 ws 庫实现 websocket 协议， socket.io 服务启动时会先启动一个 ws 服务；在收到 upgrade 事件后，socket.io 会简单校验一下 websocket 相关请求，然后把请求交给 ws 服务进行处理。<br>
+二、工作流程<br>
+在 Engine.io 连接的开始，服务器会发送一些数据信息：</p>
+<pre><code> {
+     'sid': &quot;FDHSG-WEsdXXXXXXXXX&quot;, 
+     //会话 ID。必须包含在后续 HTTP 请求的 sid 查询在数中；
+     'upgrades': ['websopcket'],
+     //升级数组包含服务器支持的所有更好的传输协议列表
+     'pingInterval': 25000,  //值用于 heartbeat 机制
+     'pingTimeout': 20000 //值用于 heartbeat 机制
+ }
+</code></pre>
+<p>二、socket.io 特点<br>
+socket.io 有时候使用 WebSocket 作为传输，但它为每个数据包添加了额外的元数据，这也是为什么 WebSocket 客户端与 socket.io服务器无法相互成功连接。<br>
+socket.io 通过普通的 WebSocket 提供的功能有：<br>
+1、可靠性：如无法建立 WebSocket 连接，则回退到 HTTP 长轮询；<br>
+2、自动重连；<br>
+3、数据包缓冲：在默认情况下，socket 未连接时发出的任何事件都会被缓冲，在建立连接后再发送出去，但有时可能存在连接恢复时导致大量的事件触发，可以通过检测进行排除法触发对应事件；<br>
+if (socket.connected) {<br>
+socket.emit( /* ... */ );<br>
+} else {<br>
+// ...<br>
+}</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://Lbxin0.github.io/post/socket-ji-zhu-xiang-jie/" class="post-title gt-a-link">
+                    Socket 技术简介
+                </a>
             </div>
+        
 
+        
 
+        
 
-            <div class="site-footer gt-c-content-color-first">
+        
+
+        <div class="site-footer gt-c-content-color-first">
     <div class="slogan gt-c-content-color-first">Lbxin-blog</div>
     <div class="social-container">
         
@@ -157,8 +196,7 @@
   hljs.highlightAll()
 </script>
 
-        </div>
     </div>
+</div>
 </body>
-
 </html>
