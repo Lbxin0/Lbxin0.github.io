@@ -6,7 +6,7 @@
 
 <title>在 React 中使用 TypeScript； | Lbxin</title>
 
-<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636189289532">
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1636189351493">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
@@ -85,7 +85,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1636189289532"
+            <form id="gridea-search-form" style="position: relative" data-update="1636189351493"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -207,10 +207,10 @@ JSX.Element 可以通过执行 React.createElement 或是转译 JSX 获得：</p
     const ele = React.createElement(&quot;div&quot;, null, &quot;Lbxin&quot;);
 </code></pre>
 <p>4、React Hooks<br>
-useState: 默认情况下 React 会根据 statue 的初始值进行自动推断 statue 和更新函数的类型；<br>
-<code>const [count, setCount] = useState&lt;number&gt;(1)</code> //已知 state 的类型；<br>
-<code>const [count, setCount] = useState&lt;number | null&gt;(null);</code>  //初始值为 null 则需显示的设置 state 的类型；<br>
-<code>const [user, setUser] = React.useState&lt;IUser&gt;({} as IUser);</code> //初始化为空对象则需断言处理，断言处理是为了避免后续的代码依赖这个对象，所以在使用前进行断言初始化 user 的值，否则会报错；</p>
+useState: 默认情况下 React 会根据 statue 的初始值进行自动推断 statue 和更新函数的类型；</p>
+<pre><code>    const [count, setCount] = useState&lt;number&gt;(1)  //已知 state 的类型；
+    const [count, setCount] = useState&lt;number | null&gt;(null); ` //初始值为 null 则需显示的设置 state 的类型；
+    const [user, setUser] = React.useState&lt;IUser&gt;({} as IUser);//初始化为空对象则需断言处理，断言处理是为了避免后续的代码依赖这个对象，所以在使用前进行断言初始化 user 的值，否则会报错；</code></pre>
 
                 </div>
             </article>
