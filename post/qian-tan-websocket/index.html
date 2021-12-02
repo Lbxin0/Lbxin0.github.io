@@ -1,0 +1,428 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>浅谈 WebSocket | Lbxin</title>
+
+<link rel="shortcut icon" href="https://Lbxin0.github.io/favicon.ico?v=1638443352571">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://Lbxin0.github.io/styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<style>
+    hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Lbxin
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1638443352571"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    浅谈 WebSocket
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-12-02 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="浅谈-websocket-协议">浅谈 websocket 协议</h3>
+<ol>
+<li>websocket 协议是 html5 的一种全双工应用层通信协议，该协议兼容常见的浏览器，基于 TCP 传输协议，并复用 HTTP 的握手通道。它可以使客户端和服务端双向数据传输变得简单快捷，并且在 TCP 连接进行一次握手后保持长久连接，允许服务器对客户端主动推送数据。另外 websocket 也支持拓展，压缩请求头节省服务器资源和宽带资源。</li>
+</ol>
+<h3 id="websocket-相关技术简介">websocket 相关技术简介</h3>
+<ol>
+<li>websocket 连接的 URL 使用 ws:// 或者 wss:// 等开头，其加密、cookie 等策略和 HTTPS/HTTP 基本相同。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/37ddc7ae45c24012a27ad2c1f8701284~tplv-k3u1fbpfcp-zoom-1.image" alt="websocket 与 HTTP" loading="lazy"></li>
+</ol>
+<blockquote>
+<p>ws 和 wss 来进行通信协议的确定，和 HTTP 和 HTTPS 类似；<br>
+ws 表示纯文本通信，wss 表示加密通道通信(TCP + TLS);<br>
+考虑到 websocket 的其他应用场景，需要自定义协议，比如保证在非 HTTP 的情况下也可以进行数据交换。<br>
+ws 协议：普通请求，占用与 HTTP 相同的 80 端口；<br>
+wss 协议：基于 SSL 的安全传输，占用与 TLS 相同的 443 端口；</p>
+</blockquote>
+<ol start="2">
+<li>HTTP 和 websocket 等应用层协议都是基于 TCP 协议来传输数据的，这些协议可以理解为是对 TCP 的封装。在 HTTP 协议下，客户端和服务器是单向的，服务器无法主动发送数据给客户端。而 websocket 是依赖于 HTTP 协议进行一次握手，以兼容浏览器的规范，在第一次 HTTP 请求后，后续就全部采用 TCP 通道进行双向通讯了。<br>
+3.客户端 websocket 请求与相应示例</li>
+</ol>
+<pre><code>//客户端请求
+GET /chat HTTP/1.1 
+Host: example.com:8000 
+Upgrade: websocket 
+Connection: Upgrade 
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ== 
+Sec-WebSocket-Version: 13
+</code></pre>
+<pre><code>//服务器相应
+HTTP/1.1 101 Switching Protocols 
+Upgrade: websocket 
+Connection: Upgrade 
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+</code></pre>
+<blockquote>
+<p>Upgrade 和 Connection 表示将请求切换到 websocket 协议，Sec-WebSocket-Key 则是浏览器随机生成的 base64 编码，结合相关的算法转化后就会成为相应体中的 Sec-WebSocket-Accept 。<br>
+4.客户端使用示例</p>
+</blockquote>
+<pre><code>var ws = new WebSocket('ws://www.xxx.com/some.php'); 
+ws.send('xxx'); //每次只能发送字符串 
+ws.onmessage = function(event) { 
+    var data = event.data; 
+}; 
+ws.onerror = function() { 
+    ws.close(); 
+};
+</code></pre>
+<blockquote>
+<p>ws.send() 方法只允许发送字符串，当需要发送复杂数据时，可以结合 <code>JSON.stringify()</code>进行相关转化再进行数据传输。</p>
+</blockquote>
+<h3 id="与-websocket-类似的技术">与 websocket 类似的技术</h3>
+<ol>
+<li>
+<p>轮询(Polling)<br>
+前端借助于 setInterval() 等方式，不断的发送请求到服务端进行数据的更新，此方法比较简单，但需要考虑轮询时间问题，时间过长会导致用户不能及时接收数据，时间过短会导致请求次数过多，增加服务器端的负担，浪费资源。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b83778fcc7e24792b8f507e8e8113c62~tplv-k3u1fbpfcp-zoom-1.image" alt="轮询(Polling)" loading="lazy"></p>
+</li>
+<li>
+<p>长轮询(Long Polling)<br>
+是对轮询的一种升级，客户端发出请求后，服务端用 while 等方式阻塞住请求，直到有数据才发送数据，而客户端收到相应后再发送下一个请求。<br>
+实际上是基于 HTTP 的一种慢相应；且在数据更新频繁的情况下，效率不一定优于一般的轮询。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/83b397658fbd4fb9967b402fd512f423~tplv-k3u1fbpfcp-zoom-1.image" alt="长轮询(Long Polling)" loading="lazy"></p>
+</li>
+<li>
+<p>HTTP 流(streaming)<br>
+使用 HTTP1.1 且响应头中包含<code>Transfer-Encoding: chunked</code>的情况下，服务端发送给客户端的数据可以分成多个部分，保持打开(while true,sleep 等)，并周期性 flush() 分块传输。<br>
+客户端只发送一个HTTP连接，在 xhr.readyState==3 状态下，用xhr.responseText.substring 获取每次的数据。<br>
+但需要注意的是这种方式会存在延迟的情况，需要额外的检测进行切换到长轮询的方式，如代理服务器或防火墙等中间人攻击造成的延迟。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ebae59aa6fe44dd89ad232761757f8b6~tplv-k3u1fbpfcp-zoom-1.image" alt="HTTP 流(streaming)" loading="lazy"></p>
+<blockquote>
+<p>流技术机制: 流技术简单的说就是客户端的页面使用一个隐藏的窗口向服务器发送一个长链接的请求，服务器接收到请求后会不断的更新数据状态，保证连接不断和信息的时效性。这种方案需兼容不同浏览器来改进用户体验，同时如果在并发情况下发生，会对服务器造成很大压力。</p>
+</blockquote>
+<blockquote>
+<p>HTTP 判断流结束的两种方式：<br>
+1、Content-Length:</p>
+<blockquote>
+<p>该方式适用于固定大小的数据传输中，需要在传输的数据前增加一个信息来告知对方要传输多少数据，这样在另一侧读取到这个长度的数据后就可以判断为接收已完成。<br>
+2、使用消息 Header 字段，<code>Transfer-Encoding:chunk</code><br>
+如果要一边产生数据一边发送给客户端，服务器就需要使用<code>Transfer-Encoding:chunk</code>这样的方式来代替 <code>Content-Length</code>。<br>
+chunk 编码将数据分成一块一块的发生。Chunked 编码将使用若干个 Chunk 串连而成，由一个标明<strong>长度为0</strong>的 chunk 标示结束。每个 Chunk 分为头部和正文两部分，头部内容指定正文的字符总数（<strong>十六进制的数字</strong>）和数量单位（一般不写），正文部分就是指定长度的实际内容，两部分之间用<strong>回车换行(CRLF)</strong> 隔开。在最后一个长度为0的 Chunk 中的内容是称为 footer 的内容，是一些附加的 Header 信息（通常可以直接忽略）。</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+<h3 id="websocket-的应用场景及优势">websocket 的应用场景及优势</h3>
+<ol>
+<li>应用场景<br>
+1、实时性要求比较高的应用；<br>
+2、聊天室；<br>
+3、iot(物联网 - Internet of things)；<br>
+4、在线多人游戏；</li>
+<li>优势<br>
+1、高性能：<br>
+根据测试环境数据的不同，大约会比正常的 Ajax 请求快2-10倍。HTTP 是文本协议，数据量比较大，且每次请求都会带有大量的重复请求头，传输性能较低，而 websocket 是基于二进制的协议，只在建立首次连接时用文本数据，后续请求传输的都是二进制的数据，因此性能比 Ajax 请求要高。<br>
+2、双向通信：<br>
+正常的 Ajax 请求如需获取实时数据，就需通过轮询等方式去获取数据，这样会浪费服务器的资源和流量。而通过 websocket 服务器可主动向前端发送消息。<br>
+3、建立在 TCP 协议之上，服务端实现容易。且与 HTTP 协议有良好的兼容性，握手时不容易被屏蔽，可以通过各种 HTTP 代理服务器。<br>
+4、可以发送文本和二进制数据，其中二进制数据传输可优化相关的传输性能。<br>
+5、较少的控制开销。连接创建后，ws 客户端、服务器进行数据交换时，协议控制的数据包头部比较小。在不包含头部的情况下，服务端到客户端的包头只有2-10字节(取决于数据包的长度)，客户端到服务端需要加上额外的4字节的掩码。而 HTTP 每次通信都需要携带完整的头部。</li>
+</ol>
+<h3 id="如何使用-websocket">如何使用 websocket</h3>
+<blockquote>
+<p>对于前端来说，使用 websocket 还是挺简单的，因为 websocket 本身就是<code>广播-收听</code>模式(<code>发布-订阅</code>)，因此前端只需要进行<code>建立连接-监听动作-操作动作</code>这几个步骤。</p>
+</blockquote>
+<ol>
+<li>建立连接-监听动作-操作动作<pre><code>var ws = new WebSocket(&quot;ws://你的域名或ip&quot;);    
+ws.onopen = function(evt) { //用于指定连接成功后的回调函数。
+    console.log(&quot;Connection open ...&quot;);    
+    ws.send(&quot;Hello WebSockets!&quot;);  //用于向服务器发送数据
+};    
+ws.onmessage = function(evt) { //收到服务器返回数据后的回调函数。  
+    console.log( &quot;Received Message: &quot; + evt.data);    
+    ws.close(); 
+}; 
+ws.onclose = function(evt) { //用于连接关闭后的回调函数  
+   console.log(&quot;Connection closed.&quot;); 
+};
+</code></pre>
+</li>
+</ol>
+<ul>
+<li>
+<p><code>new WebSocket(&quot;ws://你的域名或ip&quot;)</code>后返回一个 <code>ws</code> 的实例，简介 <code>ws</code> 实例属性:</p>
+<blockquote>
+<p>1、<code>ws.readyState</code>属性返回实例对象的当前状态，共有四种，我们可以通过监听<strong>ws.readyState</strong>去判断socket的连接状态。</p>
+<blockquote>
+<p>CONNECTING：值为0，表示正在连接。<br>
+OPEN：值为1，表示连接成功，可以通信了。<br>
+CLOSING：值为2，表示连接正在关闭。<br>
+CLOSED：值为3，表示连接已经关闭，或者打开连接失败。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>2、<code>ws.onerror</code> 用于连接报错时的回调函数。一般连接报错，我们只需要执行重新连接就好了。</p>
+</blockquote>
+<pre><code>    ws.onerror = function(event) {    
+        // handle error event 
+        ......
+    };
+</code></pre>
+</li>
+</ul>
+<p>2、服务端(Node)</p>
+<blockquote>
+<p>node中，使用最广泛的是通过ws模块来创建websocket服务，使用前需要先安装这个模块：</p>
+</blockquote>
+<pre><code>const express = require('express');
+const SocketServer = require('ws').Server;
+const port = 3000;
+const server = express().listen(port, () =&gt; {
+    console.log(`listening to ${port}`);
+})
+const wss = new SocketServer({server});
+wss.on('connection', (ws) =&gt; {
+    console.log('Client connected.');
+    ws.on('message', (data) =&gt; {
+        console.log(data);
+        //服务端发送数据到客户端
+        ws.send(data);
+    })
+    ws.on('close', () =&gt; {
+        console.log('Close connected.')
+    })
+})
+</code></pre>
+<h3 id="对接-websocket-时的常见问题">对接 websocket 时的常见问题</h3>
+<p>1、WebSocket 心跳及重连机制：<br>
+WebSocket 是前后端交互的长连接，但是会存在一些特殊情况导致连接失效且相互之间没有反馈提醒，因此为了保证连接的可持续性和稳定性就产生了 WebSocket 心跳重连机制。<br>
+原生 WebSocket 服务原因导致 WebSocket 断开不会触发 WebSocket 任何事件，前端无法得知当前连接是否断开，当调用 WebSocket.send方法浏览器才发现连接断开，然后触发 onclose 函数。<br>
+后端 WebSocket 服务也可能出现异常，造成连接断开，前端也没有收到消息，因此需要前端定时发送心跳消息 ping，后端收到消息后立刻返回 pong 消息，告知连接正常，当一定时间没有 pong 消息，前端会执行重连等操作。<br>
+2、心跳检测及重连思路：</p>
+<blockquote>
+<p>1、页面初始化，创建 WebSocket：</p>
+</blockquote>
+<pre><code>function createWebSocket() {
+  try {
+    ws = new WebSocket(wsUrl);
+    init();
+  } catch(e) {
+    console.log('catch');
+    reconnect(wsUrl);
+  }
+}
+</code></pre>
+<blockquote>
+<p>2、初始化相关监听事件：<br>
+当网络断开的时候，会先调用 onerror，onclose 事件可以监听到，会调用 reconnect 方法进行重连操作。正常的情况下，是先调用 onopen 方法的，当接收到数据时，会被 onmessage 事件监听到。</p>
+</blockquote>
+<pre><code>function init() {
+  ws.onclose = function () {
+    console.log('链接关闭');
+    reconnect(wsUrl);
+  };
+  ws.onerror = function() {
+    console.log('发生异常了');
+    reconnect(wsUrl);
+  };
+  ws.onopen = function () {
+    //心跳检测重置
+    heartCheck.start();
+  };
+  ws.onmessage = function (event) {
+    //拿到任何消息都说明当前连接是正常的
+    console.log('接收到消息');
+    heartCheck.start();
+  }
+}
+</code></pre>
+<blockquote>
+<p>3、重连操作 reconnect：<br>
+如果网络断开的话，会执行 reconnect 方法，使用了一个定时器，4秒后会重新创建一个新的 websocket 链接，重新调用 createWebSocket 函数，重新会执行及发送数据给服务器端。</p>
+</blockquote>
+<pre><code>var lockReconnect = false;//避免重复连接
+function reconnect(url) {
+  if(lockReconnect) {
+    return;
+  };
+  lockReconnect = true;
+  //没连接上会一直重连，设置延迟避免请求过多
+  tt &amp;&amp; clearTimeout(tt);
+  tt = setTimeout(function () {
+    createWebSocket(url);
+    lockReconnect = false;
+  }, 4000);
+}
+</code></pre>
+<blockquote>
+<p>4、心跳检测：<br>
+每隔一段固定的时间，向服务器端发送一个 ping 数据，如果在正常的情况下，服务器会返回一个 pong 给客户端，如果客户端通过 onmessage 事件能监听到的话，说明请求正常，重新心跳检测</p>
+</blockquote>
+<pre><code>//心跳检测
+var heartCheck = {
+  timeout: 3000,
+  timeoutObj: null,
+  serverTimeoutObj: null,
+  start: function () {
+    console.log('start');
+    var self = this;
+    this.timeoutObj &amp;&amp; clearTimeout(this.timeoutObj);
+    this.serverTimeoutObj &amp;&amp; clearTimeout(this.serverTimeoutObj);
+    this.timeoutObj = setTimeout(function () {
+      //这里发送一个心跳，后端收到后，返回一个心跳消息，
+      //onmessage拿到返回的心跳就说明连接正常
+      console.log('55555');
+      ws.send(&quot;123456789&quot;);
+      self.serverTimeoutObj = setTimeout(function () {
+        console.log('reOpen',ws);
+        ws.close();
+        // createWebSocket();
+      }, self.timeout);
+
+    }, this.timeout)
+  }
+}
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://Lbxin0.github.io/post/node-zhong-de-wang-luo-tong-xin-mo-kuai/" class="post-title gt-a-link">
+                    Node 中的网络通信模块
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">Lbxin-blog</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/X0516" target="_blank">Lbxin</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://Lbxin0.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

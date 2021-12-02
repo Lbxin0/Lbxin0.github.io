@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Lbxin0.github.io</id>
     <title>Lbxin</title>
-    <updated>2021-11-06T09:03:03.026Z</updated>
+    <updated>2021-12-02T11:09:36.403Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Lbxin0.github.io"/>
     <link rel="self" href="https://Lbxin0.github.io/atom.xml"/>
@@ -10,6 +10,20 @@
     <logo>https://Lbxin0.github.io/images/avatar.png</logo>
     <icon>https://Lbxin0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Lbxin</rights>
+    <entry>
+        <title type="html"><![CDATA[浅谈 WebSocket]]></title>
+        <id>https://Lbxin0.github.io/post/qian-tan-websocket/</id>
+        <link href="https://Lbxin0.github.io/post/qian-tan-websocket/">
+        </link>
+        <updated>2021-12-02T11:08:19.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Node 中的网络通信模块]]></title>
+        <id>https://Lbxin0.github.io/post/node-zhong-de-wang-luo-tong-xin-mo-kuai/</id>
+        <link href="https://Lbxin0.github.io/post/node-zhong-de-wang-luo-tong-xin-mo-kuai/">
+        </link>
+        <updated>2021-11-13T01:19:50.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[WebSocket-socket.io 在 Node.js 中的应用]]></title>
         <id>https://Lbxin0.github.io/post/websocket-socketio-zai-nodejs-zhong-de-ying-yong/</id>
